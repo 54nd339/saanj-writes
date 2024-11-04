@@ -15,5 +15,8 @@ module.exports = {
     // Deprecate domain after asset migration
     domains: ['media.graphassets.com']
   },
-
+  experimental: {
+    workerThreads: false,
+    cpus: 1
+  },
 }
