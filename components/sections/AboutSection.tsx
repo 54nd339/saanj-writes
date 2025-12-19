@@ -4,21 +4,19 @@ import Image from 'next/image';
 import { Icon, type IconName, RichText } from '@/components/ui';
 import { Container } from '@/components/layout';
 import { Reveal } from './Reveal';
-import type { Asset, TextGroup, Button as ButtonType } from '@/lib/types';
+import type { Author } from '@/lib/types';
 
 interface AboutSectionProps {
-  authorName: string;
-  authorBio: TextGroup[];
-  authorImage: Asset;
-  socialLinks: ButtonType[];
+  author: Author;
 }
 
-export function AboutSection({ authorName, authorBio, authorImage, socialLinks }: AboutSectionProps) {
-  // Parse the author name to extract nickname if present
-  const nameParts = authorName.match(/(.+?)\s*"(.+?)"\s*(.+)/);
-  const firstName = nameParts ? nameParts[1] : authorName.split(' ')[0];
-  const nickname = nameParts ? nameParts[2] : null;
-  const lastName = nameParts ? nameParts[3] : authorName.split(' ').slice(1).join(' ');
+export function AboutSection({ author }: AboutSectionProps) {
+  // Parse the author name to extract name parts, but prefer the explicit nickname field
+  const nameParts = author.name.match(/(.+?)\s*"(.+?)"\s*(.+)/);
+  const firstName = nameParts ? nameParts[1] : author.name.split(' ')[0];
+  const parsedNickname = nameParts ? nameParts[2] : null;
+  const lastName = nameParts ? nameParts[nameParts.length - 1] : author.name.split(' ').slice(1).join(' ');
+  const nickname = author.nickname || parsedNickname;
 
   return (
     <section
@@ -44,7 +42,7 @@ export function AboutSection({ authorName, authorBio, authorImage, socialLinks }
                 </h3>
                 <div className="w-full h-px bg-[var(--text-muted)]/20 my-8" />
                 <div className="flex gap-4 md:gap-6">
-                  {socialLinks.map((link) => (
+                  {author.socialLinks.map((link) => (
                     <a
                       key={link.label}
                       href={link.url}
@@ -60,21 +58,25 @@ export function AboutSection({ authorName, authorBio, authorImage, socialLinks }
               </div>
 
               {/* Author Image at Bottom */}
-              <div className="mt-8 aspect-[4/3] w-full overflow-hidden bg-[var(--bg-card)] rounded-sm relative">
-                <Image
-                  src={authorImage.url}
-                  alt="Author"
-                  fill
-                  className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  unoptimized={authorImage.url.startsWith('http')}
-                />
-              </div>
+              {author.image?.url && (
+                <Reveal>
+                  <div className="mt-8 aspect-[4/3] w-full overflow-hidden bg-[var(--bg-card)] rounded-sm relative">
+                    <Image
+                      src={author.image.url}
+                      alt="Author"
+                      fill
+                      className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      unoptimized={author.image.url.startsWith('http')}
+                    />
+                  </div>
+                </Reveal>
+              )}
             </div>
           </Reveal>
 
           <div className="space-y-8 md:space-y-12">
-            {authorBio.map((bioGroup, index) => {
+            {author.bio.map((bioGroup, index) => {
               const iconMap: Record<string, 'book' | 'feather' | 'palette' | 'search'> = {
                 'Academia': 'book',
                 'Poetry': 'feather',

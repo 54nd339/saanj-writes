@@ -29,8 +29,9 @@ export async function fetchHygraph<T>(
   const json = await res.json();
 
   if (json.errors) {
-    console.error('Hygraph Error:', json.errors);
-    throw new Error('Failed to fetch from Hygraph');
+    console.error('Hygraph Error:', JSON.stringify(json.errors, null, 2));
+    const errorMessage = json.errors[0]?.message || 'Failed to fetch from Hygraph';
+    throw new Error(`Hygraph Error: ${errorMessage}`);
   }
 
   return json.data;

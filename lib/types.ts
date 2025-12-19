@@ -32,7 +32,7 @@ export interface Category {
 export interface Author {
   name: string;
   nickname?: string;
-  bio: RichTextContent;
+  bio: TextGroup[];
   image: Asset;
   socialLinks: Button[];
 }
@@ -96,10 +96,7 @@ export interface SiteConfig {
   heroImage: Asset;
   heroText: TextGroup;
   heroButtons: Button[];
-  authorImage: Asset;
-  authorName: string;
-  authorBio: TextGroup[];
-  authorSocialLinks: Button[];
+  defaultAuthor: Author;
   showScrollIndicator: boolean;
   journalSectionText: TextGroup;
 }

@@ -78,26 +78,29 @@ export const SITE_CONFIG_QUERY = `
         url
         style
       }
-      authorImage {
-        url
-        width
-        height
-      }
-      authorName
-      authorBio {
-        eyebrow
-        heading
-        subheading
-        body {
-          raw
-          html
-          text
+      defaultAuthor {
+        name
+        nickname
+        image {
+          url
+          width
+          height
         }
-      }
-      authorSocialLinks {
-        label
-        url
-        icon
+        bio {
+          eyebrow
+          heading
+          subheading
+          body {
+            raw
+            html
+            text
+          }
+        }
+        socialLinks {
+          label
+          url
+          icon
+        }
       }
       showScrollIndicator
       journalSectionText {
@@ -197,7 +200,16 @@ export const POST_BY_SLUG_QUERY = `
       author {
         name
         nickname
-        bio { raw html text }
+        bio {
+          eyebrow
+          heading
+          subheading
+          body {
+            raw
+            html
+            text
+          }
+        }
         image { url }
         socialLinks {
           label
@@ -224,6 +236,216 @@ export const POST_SLUGS_QUERY = `
   query PostSlugs {
     posts {
       slug
+    }
+  }
+`;
+
+// Bulk query to fetch all posts with full details (for caching)
+export const ALL_POSTS_FULL_QUERY = `
+  query AllPostsFull {
+    posts(orderBy: publishDate_DESC) {
+      slug
+      title
+      excerpt
+      category {
+        name
+        slug
+        color { hex }
+      }
+      publishDate
+      content {
+        raw
+        html
+        text
+      }
+      coverImage {
+        url
+        width
+        height
+      }
+      author {
+        name
+        nickname
+        bio {
+          eyebrow
+          heading
+          subheading
+          body {
+            raw
+            html
+            text
+          }
+        }
+        image { url }
+        socialLinks {
+          label
+          url
+          icon
+        }
+      }
+      isFeatured
+    }
+  }
+`;
+
+// Combined bulk query for site config, all posts, and categories
+export const BULK_DATA_QUERY = `
+  query BulkData($siteConfigId: ID!) {
+    siteConfig(where: { id: $siteConfigId }) {
+      siteName
+      logo {
+        url
+        width
+        height
+      }
+      contactEmail
+      themeSettings {
+        name
+        light {
+          bgMain { hex }
+          bgCard { hex }
+          textMain { hex }
+          textMuted { hex }
+          accent { hex }
+          accentLight { hex }
+        }
+        dark {
+          bgMain { hex }
+          bgCard { hex }
+          textMain { hex }
+          textMuted { hex }
+          accent { hex }
+          accentLight { hex }
+        }
+      }
+      defaultSeo {
+        metaTitle
+        metaDescription
+        ogImage {
+          url
+          width
+          height
+        }
+        noIndex
+      }
+      mainNavigation {
+        label
+        url
+        type
+        icon
+        openInNewTab
+      }
+      footer {
+        text {
+          heading
+          subheading
+        }
+        navButtons {
+          label
+          url
+        }
+        socialButtons {
+          label
+          url
+          icon
+        }
+      }
+      heroImage {
+        url
+        width
+        height
+      }
+      heroText {
+        eyebrow
+        heading
+        subheading
+      }
+      heroButtons {
+        label
+        url
+        style
+      }
+      defaultAuthor {
+        name
+        nickname
+        image {
+          url
+          width
+          height
+        }
+        bio {
+          eyebrow
+          heading
+          subheading
+          body {
+            raw
+            html
+            text
+          }
+        }
+        socialLinks {
+          label
+          url
+          icon
+        }
+      }
+      showScrollIndicator
+      journalSectionText {
+        heading
+        subheading
+      }
+    }
+    posts(orderBy: publishDate_DESC) {
+      slug
+      title
+      excerpt
+      category {
+        name
+        slug
+        color { hex }
+      }
+      publishDate
+      content {
+        raw
+        html
+        text
+      }
+      coverImage {
+        url
+        width
+        height
+      }
+      author {
+        name
+        nickname
+        bio {
+          eyebrow
+          heading
+          subheading
+          body {
+            raw
+            html
+            text
+          }
+        }
+        image { url }
+        socialLinks {
+          label
+          url
+          icon
+        }
+      }
+      isFeatured
+    }
+    categories {
+      name
+      slug
+      color { hex }
+    }
+    postsConnection {
+      aggregate {
+        count
+      }
     }
   }
 `;

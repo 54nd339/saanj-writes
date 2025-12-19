@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Playfair_Display, JetBrains_Mono, Source_Sans_3 } from 'next/font/google';
 import './globals.css';
-import { getSiteConfig } from '@/lib/hygraph';
+import { getSiteConfig, fetchBulkData } from '@/lib/hygraph';
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -23,6 +23,13 @@ const sourceSans = Source_Sans_3({
 
 // Get site config for metadata
 async function getMetadata() {
+  // Fetch bulk data early to populate cache
+  try {
+    await fetchBulkData();
+  } catch (error) {
+    console.warn('Bulk fetch failed, falling back to individual fetch:', error);
+  }
+  
   const siteConfig = await getSiteConfig();
   return {
     title: {
@@ -35,6 +42,11 @@ async function getMetadata() {
       description: siteConfig.defaultSeo.metaDescription,
       images: siteConfig.defaultSeo.ogImage ? [siteConfig.defaultSeo.ogImage.url] : [],
       type: 'website',
+      locale: 'en_US',
+    },
+    other: {
+      'Content-Language': 'en',
+      'google': 'notranslate',
     },
   };
 }
@@ -47,7 +59,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" translate="no" suppressHydrationWarning>
       <body
         className={`${playfair.variable} ${jetbrains.variable} ${sourceSans.variable} font-sans antialiased`}
       >

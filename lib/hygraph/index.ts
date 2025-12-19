@@ -17,4 +17,5 @@ export {
   getPostBySlug,
   getAllCategories,
   getAllPostSlugs,
+  fetchBulkData,
 } from './data';

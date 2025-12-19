@@ -17,10 +17,7 @@ export default async function HomePage() {
         posts={featuredPosts}
       />
       <AboutSection
-        authorName={siteConfig.authorName}
-        authorBio={siteConfig.authorBio}
-        authorImage={siteConfig.authorImage}
-        socialLinks={siteConfig.authorSocialLinks}
+        author={siteConfig.defaultAuthor}
       />
     </>
   );
