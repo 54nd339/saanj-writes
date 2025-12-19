@@ -1,161 +1,136 @@
 'use client';
 
-import { Share2, Link as LinkIcon } from 'lucide-react';
-import { cn, copyToClipboard, getFullUrl, isMobileDevice, formatDate } from '@/lib/utils';
+import { useState } from 'react';
+import { Share2, Link as LinkIcon, Eye } from 'lucide-react';
+import { cn, isMobileDevice } from '@/lib/utils';
+import { handleShare } from '@/lib/shareUtils';
+import { ShareHiddenCard } from './ShareHiddenCard';
+import { SharePreviewModal } from './SharePreviewModal';
+import { useShareImage } from '@/hooks/useShareImage';
 import { Toast, useToast } from './Toast';
+import type { Post } from '@/lib/types';
+import { ROUTES } from '@/lib/constants';
 
 interface ShareButtonProps {
-  title: string;
-  text: string;
-  url: string;
-  author?: string;
-  publishDate?: string;
+  post: Post;
+  readTime: string;
   className?: string;
   variant?: 'icon' | 'button';
 }
 
 export function ShareButton({
-  title,
-  text,
-  url,
-  author,
-  publishDate,
+  post,
+  readTime,
   className,
   variant = 'icon',
 }: ShareButtonProps) {
   const { toast, showToast, hideToast } = useToast();
+  const { generateShareImage, cardRef } = useShareImage();
+  const url = `${ROUTES.BLOGS}/${post.slug}`;
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+  const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
 
-  const handleShareClick = async () => {
-    const fullUrl = getFullUrl(url);
+  const onShareClick = () => {
+    handleShare({
+      post,
+      url,
+      generateShareImage,
+      cardRef,
+      onSuccess: (message) => showToast(message, 'success'),
+      onError: (message) => showToast(message, 'error'),
+    });
+  };
 
-    // Desktop: Copy link to clipboard
-    if (!isMobileDevice()) {
-      try {
-        const success = await copyToClipboard(fullUrl);
-        if (success) {
-          showToast('Link copied to clipboard!', 'success');
-        } else {
-          // Fallback for older browsers
-          const textArea = document.createElement('textarea');
-          textArea.value = fullUrl;
-          textArea.style.position = 'fixed';
-          textArea.style.opacity = '0';
-          document.body.appendChild(textArea);
-          textArea.select();
-          try {
-            document.execCommand('copy');
-            showToast('Link copied to clipboard!', 'success');
-          } catch {
-            showToast('Failed to copy link', 'error');
-          } finally {
-            document.body.removeChild(textArea);
-          }
-        }
-      } catch {
-        showToast('Failed to copy link', 'error');
-      }
-      return;
-    }
+  const onPreviewClick = async () => {
+    setIsPreviewOpen(true);
+    setIsGeneratingPreview(true);
+    setPreviewImageUrl(null);
 
-    // Mobile: Use native share API (Open Graph tags will show the preview card)
-    if (typeof navigator !== 'undefined' && 'share' in navigator) {
-      try {
-        const shareTextParts: string[] = [title];
-        
-        if (author || publishDate) {
-          const metaParts: string[] = [];
-          if (author) metaParts.push(`By ${author}`);
-          if (publishDate) metaParts.push(formatDate(publishDate));
-          if (metaParts.length > 0) {
-            shareTextParts.push(metaParts.join(' • '));
-          }
-        }
-        
-        if (text) {
-          shareTextParts.push(text);
-        }
-        
-        await navigator.share({
-          title: title,
-          text: shareTextParts.join('\n\n'),
-          url: fullUrl,
-        });
-      } catch (err) {
-        // User cancelled or error
-        if ((err as Error).name !== 'AbortError') {
-          // Fallback: copy link
-          const success = await copyToClipboard(fullUrl);
-          if (success) {
-            showToast('Link copied to clipboard!', 'success');
-          }
-        }
-      }
-    } else {
-      // Web Share API not available - copy link
-      const success = await copyToClipboard(fullUrl);
-      if (success) {
-        showToast('Link copied to clipboard!', 'success');
+    try {
+      const imageFile = await generateShareImage(cardRef);
+      if (imageFile) {
+        const url = URL.createObjectURL(imageFile);
+        setPreviewImageUrl(url);
       } else {
-        showToast('Share not supported', 'error');
+        showToast('Failed to generate preview', 'error');
       }
+    } catch (error) {
+      console.error('Failed to generate preview:', error);
+      showToast('Failed to generate preview', 'error');
+    } finally {
+      setIsGeneratingPreview(false);
     }
   };
 
-  if (variant === 'icon') {
-    return (
-      <>
+  const handleClosePreview = () => {
+    setIsPreviewOpen(false);
+    if (previewImageUrl) {
+      URL.revokeObjectURL(previewImageUrl);
+      setPreviewImageUrl(null);
+    }
+  };
+
+  const isIconVariant = variant === 'icon';
+  const buttonBaseStyles = isIconVariant
+    ? 'p-3 rounded-full'
+    : 'inline-flex items-center gap-2 px-4 py-2 font-mono text-xs uppercase tracking-widest rounded-lg';
+  const iconSize = isIconVariant ? 'w-5 h-5' : 'w-4 h-4';
+  const ShareIcon = isMobileDevice() ? Share2 : LinkIcon;
+
+  return (
+    <>
+      <ShareHiddenCard ref={cardRef} post={post} readTime={readTime} />
+
+      <div className="flex items-center gap-2">
         <button
-          onClick={handleShareClick}
+          onClick={onShareClick}
           className={cn(
-            'p-3 rounded-full border border-[var(--text-muted)]/20',
+            buttonBaseStyles,
+            'border border-[var(--text-muted)]/20',
             'hover:bg-[var(--bg-card)] hover:border-[var(--accent)]',
             'transition-all duration-300 text-[var(--text-muted)] hover:text-[var(--accent)]',
             className
           )}
           aria-label="Share this post"
         >
-          {isMobileDevice() ? (
-            <Share2 className="w-5 h-5" />
-          ) : (
-            <LinkIcon className="w-5 h-5" />
-          )}
+          <ShareIcon className={iconSize} />
+          {!isIconVariant && 'Share'}
         </button>
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          isVisible={toast.isVisible}
-          onClose={hideToast}
-        />
-      </>
-    );
-  }
+        {isDevelopment && (
+          <button
+            onClick={onPreviewClick}
+            className={cn(
+              buttonBaseStyles,
+              'border border-[var(--text-muted)]/20',
+              'hover:bg-[var(--bg-card)] hover:border-[var(--accent)]',
+              'transition-all duration-300 text-[var(--text-muted)] hover:text-[var(--accent)]',
+              className
+            )}
+            aria-label="Preview share image"
+            title="Preview share image"
+          >
+            <Eye className={iconSize} />
+            {!isIconVariant && 'Preview'}
+          </button>
+        )}
+      </div>
 
-  return (
-    <>
-      <button
-        onClick={handleShareClick}
-        className={cn(
-          'inline-flex items-center gap-2 px-4 py-2',
-          'font-mono text-xs uppercase tracking-widest',
-          'border border-[var(--text-muted)]/20 rounded-lg',
-          'hover:bg-[var(--bg-card)] hover:border-[var(--accent)]',
-          'transition-all duration-300 text-[var(--text-muted)] hover:text-[var(--accent)]',
-          className
-        )}
-      >
-        {isMobileDevice() ? (
-          <Share2 className="w-4 h-4" />
-        ) : (
-          <LinkIcon className="w-4 h-4" />
-        )}
-        Share
-      </button>
       <Toast
         message={toast.message}
         type={toast.type}
         isVisible={toast.isVisible}
         onClose={hideToast}
       />
+      {isDevelopment && (
+        <SharePreviewModal
+          isOpen={isPreviewOpen}
+          onClose={handleClosePreview}
+          imageUrl={previewImageUrl}
+          isLoading={isGeneratingPreview}
+        />
+      )}
     </>
   );
 }

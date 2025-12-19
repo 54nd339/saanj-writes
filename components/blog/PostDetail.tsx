@@ -95,14 +95,11 @@ export function PostDetail({ post }: PostDetailProps) {
         {/* Footer */}
         <div className="mt-20 pt-8 border-t border-[var(--text-muted)]/20 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="font-mono text-xs text-[var(--text-muted)] uppercase tracking-widest text-center sm:text-left">
-            Written by {post.author?.name || 'Sanjeebani Nanda'} • {formattedDate}
+            Written by {post.author?.name || 'Sanjeebani Nanda'}
           </p>
           <ShareButton
-            title={post.title}
-            text={post.excerpt}
-            url={`${ROUTES.BLOGS}/${post.slug}`}
-            author={post.author?.name}
-            publishDate={post.publishDate}
+            post={post}
+            readTime={readTime}
             variant="button"
           />
         </div>
