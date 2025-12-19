@@ -34,27 +34,27 @@ export function BlogsPageContent({ initialPosts, categories, journalText }: Blog
   return (
     <Container>
       <Reveal>
-        <div className="mb-8 md:mb-12">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between md:gap-8 mb-6 md:mb-8">
+        <div className="mb-6 sm:mb-8 md:mb-12">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between md:gap-6 lg:gap-8 mb-4 sm:mb-6 md:mb-8">
             <div className="flex-1">
               {journalText?.heading && (
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-[var(--text-main)] mb-4 md:mb-6">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-[var(--text-main)] mb-3 sm:mb-4 md:mb-6">
                   {journalText.heading}
                 </h1>
               )}
               {journalText?.subheading && (
-                <p className="text-lg md:text-xl text-[var(--text-muted)] max-w-2xl font-serif italic">
+                <p className="text-base sm:text-lg md:text-xl text-[var(--text-muted)] max-w-2xl font-serif italic">
                   {journalText.subheading}
                 </p>
               )}
               {journalText?.body && !journalText.subheading && (
-                <div className="text-lg md:text-xl text-[var(--text-muted)] max-w-2xl font-serif italic">
+                <div className="text-base sm:text-lg md:text-xl text-[var(--text-muted)] max-w-2xl font-serif italic">
                   <RichText content={journalText.body} />
                 </div>
               )}
             </div>
 
-            <div className="mt-6 md:mt-0 md:flex-shrink-0 md:w-80">
+            <div className="mt-4 sm:mt-6 md:mt-0 md:flex-shrink-0 md:w-72 lg:w-80">
               <SearchFilter
                 categories={categories}
                 posts={initialPosts}
@@ -65,7 +65,7 @@ export function BlogsPageContent({ initialPosts, categories, journalText }: Blog
           </div>
 
           {/* Results count */}
-          <p className="font-mono text-xs uppercase tracking-widest text-[var(--text-muted)]">
+          <p className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-[var(--text-muted)]">
             {resultsText()}
           </p>
         </div>
@@ -75,7 +75,7 @@ export function BlogsPageContent({ initialPosts, categories, journalText }: Blog
         <PostGrid posts={filteredPosts} />
       </Reveal>
 
-      <div className="h-20" />
+      <div className="h-12 sm:h-16 md:h-20" />
     </Container>
   );
 }

@@ -1,12 +1,12 @@
 'use client';
 
-import React from 'react';
+import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { ANIMATION } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 
 interface RevealProps {
-  children: React.ReactNode;
+  children: ReactNode;
   delay?: number;
   className?: string;
   direction?: 'up' | 'down' | 'left' | 'right';

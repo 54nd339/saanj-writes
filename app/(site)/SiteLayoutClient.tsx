@@ -1,13 +1,13 @@
 'use client';
 
-import React from 'react';
+import type { ReactNode } from 'react';
 import { Navbar, Footer } from '@/components/layout';
 import { Loader } from '@/components/ui';
 import { useThemeContext } from '@/components/providers';
 import type { SiteConfig } from '@/lib/types';
 
 interface SiteLayoutClientProps {
-  children: React.ReactNode;
+  children: ReactNode;
   siteConfig: SiteConfig;
 }
 

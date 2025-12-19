@@ -1,9 +1,9 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { Container } from './Container';
 
 interface SectionProps {
-  children: React.ReactNode;
+  children: ReactNode;
   id?: string;
   className?: string;
   containerSize?: 'default' | 'narrow' | 'wide';

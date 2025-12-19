@@ -23,7 +23,7 @@ export function PostDetail({ post }: PostDetailProps) {
   const separator = '//';
 
   return (
-    <article className="min-h-screen bg-[var(--bg-main)] pb-32 pt-24 relative z-10">
+    <article className="min-h-screen bg-[var(--bg-main)] pb-16 sm:pb-24 md:pb-32 pt-20 sm:pt-24 relative z-10">
       {/* Progress Bar */}
       <motion.div
         initial={{ scaleX: 0 }}
@@ -38,16 +38,16 @@ export function PostDetail({ post }: PostDetailProps) {
         {/* Back Button */}
         <Link
           href={ROUTES.BLOGS}
-          className="group flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[var(--text-muted)] mb-12 hover:text-[var(--text-main)] transition-colors"
+          className="group flex items-center gap-1.5 sm:gap-2 font-mono text-[10px] sm:text-xs uppercase tracking-widest text-[var(--text-muted)] mb-8 sm:mb-10 md:mb-12 hover:text-[var(--text-main)] transition-colors"
         >
-          <Icon name="arrowLeft" size={16} className="group-hover:-translate-x-1 transition-transform" />
+          <Icon name="arrowLeft" size={14} className="sm:w-4 sm:h-4 group-hover:-translate-x-1 transition-transform" />
           Back to Anthology
         </Link>
 
         {/* Header */}
         <Reveal>
-          <div className="mb-12 border-b border-[var(--text-muted)]/20 pb-12">
-            <div className="flex flex-wrap gap-4 font-mono text-xs uppercase tracking-widest text-[var(--accent)] mb-6">
+          <div className="mb-8 sm:mb-10 md:mb-12 border-b border-[var(--text-muted)]/20 pb-8 sm:pb-10 md:pb-12">
+            <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 font-mono text-[10px] sm:text-xs uppercase tracking-widest text-[var(--accent)] mb-4 sm:mb-6">
               {post.category && (
                 <>
                   <Badge color={post.category.color?.hex}>{post.category.name}</Badge>
@@ -58,10 +58,10 @@ export function PostDetail({ post }: PostDetailProps) {
               <span className="text-[var(--text-muted)]">{separator}</span>
               <span className="text-[var(--text-muted)]">{readTime}</span>
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-[var(--text-main)] mb-8 leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-serif font-bold text-[var(--text-main)] mb-6 sm:mb-8 leading-tight">
               {post.title}
             </h1>
-            <p className="text-lg md:text-xl text-[var(--text-muted)] font-light leading-relaxed italic border-l-2 border-[var(--accent)] pl-4">
+            <p className="text-base sm:text-lg md:text-xl text-[var(--text-muted)] font-light leading-relaxed italic border-l-2 border-[var(--accent)] pl-3 sm:pl-4">
               &quot;{post.excerpt}&quot;
             </p>
           </div>
@@ -69,7 +69,7 @@ export function PostDetail({ post }: PostDetailProps) {
 
         {/* Cover Image */}
         <Reveal delay={100}>
-          <div className="aspect-[21/9] w-full bg-[var(--bg-card)] mb-16 rounded-sm overflow-hidden shadow-lg grayscale hover:grayscale-0 transition-all duration-700 relative">
+          <div className="aspect-[21/9] w-full bg-[var(--bg-card)] mb-12 sm:mb-14 md:mb-16 rounded-sm overflow-hidden shadow-lg grayscale hover:grayscale-0 transition-all duration-700 relative">
             <Image
               src={post.coverImage.url}
               alt={post.title}
@@ -84,7 +84,7 @@ export function PostDetail({ post }: PostDetailProps) {
 
         {/* Content */}
         <Reveal delay={200}>
-          <div className="prose prose-lg md:prose-xl max-w-none font-serif">
+          <div className="prose prose-sm sm:prose-base md:prose-lg lg:prose-xl max-w-none font-serif">
             <RichText
               content={post.content}
               variant={isPoetry ? 'poetry' : 'prose'}

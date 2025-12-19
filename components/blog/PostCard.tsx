@@ -55,16 +55,16 @@ export function PostCard({ post, variant = 'default', index = 0 }: PostCardProps
             <span>{formattedDate}</span>
           </div>
 
-          <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-[var(--text-main)] mb-4 md:mb-6 group-hover:underline decoration-1 underline-offset-8 transition-all decoration-[var(--text-muted)] break-words">
+          <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-serif font-bold text-[var(--text-main)] mb-3 sm:mb-4 md:mb-6 group-hover:underline decoration-1 underline-offset-4 sm:underline-offset-8 transition-all decoration-[var(--text-muted)] break-words">
             {post.title}
           </h3>
 
-          <p className="text-base md:text-lg text-[var(--text-muted)] font-serif leading-relaxed mb-6 md:mb-8 italic break-words line-clamp-3">
+          <p className="text-sm sm:text-base md:text-lg text-[var(--text-muted)] font-serif leading-relaxed mb-4 sm:mb-6 md:mb-8 italic break-words line-clamp-3">
             {post.excerpt}
           </p>
 
-          <div className="flex items-center gap-2 font-mono text-sm uppercase tracking-widest font-bold text-[var(--text-main)] group-hover:gap-4 transition-all group-hover:text-[var(--accent)]">
-            Read Piece <Icon name="arrowRight" size={16} />
+          <div className="flex items-center gap-1.5 sm:gap-2 font-mono text-xs sm:text-sm uppercase tracking-widest font-bold text-[var(--text-main)] group-hover:gap-3 sm:group-hover:gap-4 transition-all group-hover:text-[var(--accent)]">
+            Read Piece <Icon name="arrowRight" size={14} className="sm:w-4 sm:h-4" />
           </div>
         </div>
       </Link>
@@ -115,30 +115,30 @@ export function PostCard({ post, variant = 'default', index = 0 }: PostCardProps
           unoptimized={post.coverImage.url.startsWith('http')}
         />
       </div>
-      <div className="p-5 md:p-6">
-        <div className="flex items-center gap-3 mb-3">
+      <div className="p-4 sm:p-5 md:p-6">
+        <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3 flex-wrap">
           {post.category && (
             <Badge size="sm" color={post.category.color?.hex}>
               {post.category.name}
             </Badge>
           )}
-          <span className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
+          <span className="font-mono text-[9px] sm:text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
             {formattedDate}
           </span>
         </div>
-        <h3 className="font-serif text-xl font-bold text-[var(--text-main)] mb-2 group-hover:text-[var(--accent)] transition-colors line-clamp-2">
+        <h3 className="font-serif text-lg sm:text-xl font-bold text-[var(--text-main)] mb-2 group-hover:text-[var(--accent)] transition-colors line-clamp-2">
           {post.title}
         </h3>
-        <p className="text-sm text-[var(--text-muted)] line-clamp-2 mb-4">
+        <p className="text-xs sm:text-sm text-[var(--text-muted)] line-clamp-2 mb-3 sm:mb-4">
           {post.excerpt}
         </p>
         <div className="flex items-center justify-between">
-          <span className="font-mono text-xs text-[var(--text-muted)] flex items-center gap-1">
-            <Icon name="clock" size={12} />
+          <span className="font-mono text-[10px] sm:text-xs text-[var(--text-muted)] flex items-center gap-1">
+            <Icon name="clock" size={11} className="sm:w-3 sm:h-3" />
             {readTime}
           </span>
-          <span className="font-mono text-xs text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-            Read <Icon name="arrowRight" size={12} />
+          <span className="font-mono text-[10px] sm:text-xs text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+            Read <Icon name="arrowRight" size={11} className="sm:w-3 sm:h-3" />
           </span>
         </div>
       </div>

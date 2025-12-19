@@ -1,5 +1,4 @@
-import { copyToClipboard, getFullUrl, isMobileDevice } from './utils';
-import { formatDate } from './utils';
+import { copyToClipboard, getFullUrl, isMobileDevice, formatDate } from './utils';
 import type { Post } from './types';
 import type { RefObject } from 'react';
 
@@ -12,7 +11,6 @@ export function buildShareText(post: Post): string {
     if (post.publishDate) metaParts.push(formatDate(post.publishDate));
     if (metaParts.length > 0) {
       shareTextParts.push(metaParts.join(' • '));
-      shareTextParts.join('\n');
     }
   }
   
@@ -30,38 +28,6 @@ interface HandleShareParams {
   cardRef: RefObject<HTMLDivElement | null>;
   onSuccess?: (message: string) => void;
   onError?: (message: string) => void;
-}
-
-export async function downloadShareImage(
-  generateShareImage: (cardRef: RefObject<HTMLDivElement | null>) => Promise<File | null>,
-  cardRef: RefObject<HTMLDivElement | null>,
-  postSlug: string,
-  onSuccess?: (message: string) => void,
-  onError?: (message: string) => void
-): Promise<boolean> {
-  try {
-    const shareImage = await generateShareImage(cardRef);
-    if (!shareImage) {
-      onError?.('Failed to generate image');
-      return false;
-    }
-
-    const url = URL.createObjectURL(shareImage);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${postSlug}-share-card.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    
-    onSuccess?.('Image saved! You can now share it on social media.');
-    return true;
-  } catch (error) {
-    console.error('Failed to download image:', error);
-    onError?.('Failed to download image');
-    return false;
-  }
 }
 
 export async function handleShare({

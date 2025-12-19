@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X } from 'lucide-react';
@@ -33,7 +33,7 @@ export function Toast({
   onClose,
   duration = 3000,
 }: ToastProps) {
-  const [mounted, setMounted] = React.useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     // Defer state update to avoid synchronous setState warning
@@ -60,15 +60,15 @@ export function Toast({
           exit={{ opacity: 0, y: 20, scale: 0.9 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           className={cn(
-            'fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999]',
-            'px-4 py-3 rounded-lg shadow-lg backdrop-blur-sm',
-            'flex items-center gap-3 font-mono text-sm',
-            'pointer-events-auto',
+            'fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-[9999]',
+            'px-3 sm:px-4 py-2 sm:py-3 rounded-lg shadow-lg backdrop-blur-sm',
+            'flex items-center gap-2 sm:gap-3 font-mono text-xs sm:text-sm',
+            'pointer-events-auto max-w-[90vw] sm:max-w-none',
             styles[type]
           )}
         >
-          {Icon && <Icon className="w-4 h-4" />}
-          <span>{message}</span>
+          {Icon && <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />}
+          <span className="break-words">{message}</span>
         </motion.div>
       )}
     </AnimatePresence>
@@ -81,7 +81,7 @@ export function Toast({
 
 // Hook for toast management
 export function useToast() {
-  const [toast, setToast] = React.useState<{
+  const [toast, setToast] = useState<{
     message: string;
     type: 'success' | 'error' | 'info';
     isVisible: boolean;

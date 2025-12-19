@@ -126,22 +126,22 @@ export function SearchFilter({ categories, onFilter, posts, compact = false }: S
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -10, scale: 0.95 }}
                 transition={{ duration: ANIMATION.DURATION.FAST }}
-                className="absolute right-0 top-full mt-2 w-64 bg-[var(--bg-card)] border border-[var(--text-muted)]/20 rounded-lg shadow-lg z-50 overflow-hidden"
+                className="absolute right-0 top-full mt-2 w-56 sm:w-64 bg-[var(--bg-card)] border border-[var(--text-muted)]/20 rounded-lg shadow-lg z-50 overflow-hidden"
               >
-                <div className="p-4 space-y-4">
+                <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
                   {/* Category Filter */}
                   <div>
-                    <h3 className="font-mono text-xs uppercase tracking-widest text-[var(--text-muted)] mb-3">
+                    <h3 className="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-[var(--text-muted)] mb-2 sm:mb-3">
                       Category
                     </h3>
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <button
                         onClick={() => {
                           handleCategoryClick(null);
                           setIsDropdownOpen(false);
                         }}
                         className={cn(
-                          'w-full text-left px-3 py-2 rounded-md font-mono text-xs uppercase tracking-wider transition-all',
+                          'w-full text-left px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-md font-mono text-[10px] sm:text-xs uppercase tracking-wider transition-all',
                           selectedCategory === null
                             ? 'bg-[var(--accent)] text-white'
                             : 'bg-[var(--bg-main)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)]'
@@ -157,7 +157,7 @@ export function SearchFilter({ categories, onFilter, posts, compact = false }: S
                             setIsDropdownOpen(false);
                           }}
                           className={cn(
-                            'w-full text-left px-3 py-2 rounded-md font-mono text-xs uppercase tracking-wider transition-all',
+                            'w-full text-left px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-md font-mono text-[10px] sm:text-xs uppercase tracking-wider transition-all',
                             selectedCategory === category.slug
                               ? 'text-white'
                               : 'bg-[var(--bg-main)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)]'
@@ -179,9 +179,9 @@ export function SearchFilter({ categories, onFilter, posts, compact = false }: S
                       <div className="h-px bg-[var(--text-muted)]/10" />
                       <button
                         onClick={clearFilters}
-                        className="w-full text-left px-3 py-2 rounded-md font-mono text-xs uppercase tracking-wider text-[var(--accent)] hover:bg-[var(--bg-main)] transition-colors flex items-center gap-2"
+                        className="w-full text-left px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-md font-mono text-[10px] sm:text-xs uppercase tracking-wider text-[var(--accent)] hover:bg-[var(--bg-main)] transition-colors flex items-center gap-1.5 sm:gap-2"
                       >
-                        <Icon name="close" size={14} />
+                        <Icon name="close" size={12} className="sm:w-3.5 sm:h-3.5" />
                         Clear Filters
                       </button>
                     </>
@@ -194,7 +194,7 @@ export function SearchFilter({ categories, onFilter, posts, compact = false }: S
       </div>
 
       {hasActiveFilters && !compact && (
-        <div className="flex items-center gap-3 flex-wrap mt-4">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap mt-3 sm:mt-4">
           {selectedCategory && (
             <Badge
               variant="accent"

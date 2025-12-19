@@ -1,8 +1,8 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
 interface BadgeProps {
-  children: React.ReactNode;
+  children: ReactNode;
   variant?: 'default' | 'accent' | 'muted' | 'outline';
   size?: 'sm' | 'md';
   className?: string;

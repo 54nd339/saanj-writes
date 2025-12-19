@@ -74,16 +74,16 @@ export function ShareButton({
 
   const isIconVariant = variant === 'icon';
   const buttonBaseStyles = isIconVariant
-    ? 'p-3 rounded-full'
-    : 'inline-flex items-center gap-2 px-4 py-2 font-mono text-xs uppercase tracking-widest rounded-lg';
-  const iconSize = isIconVariant ? 'w-5 h-5' : 'w-4 h-4';
+    ? 'p-2.5 sm:p-3 rounded-full'
+    : 'inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 font-mono text-[10px] sm:text-xs uppercase tracking-widest rounded-lg';
+  const iconSize = isIconVariant ? 'w-4 h-4 sm:w-5 sm:h-5' : 'w-3.5 h-3.5 sm:w-4 sm:h-4';
   const ShareIcon = isMobileDevice() ? Share2 : LinkIcon;
 
   return (
     <>
       <ShareHiddenCard ref={cardRef} post={post} readTime={readTime} />
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         <button
           onClick={onShareClick}
           className={cn(
@@ -96,7 +96,7 @@ export function ShareButton({
           aria-label="Share this post"
         >
           <ShareIcon className={iconSize} />
-          {!isIconVariant && 'Share'}
+          {!isIconVariant && <span className="hidden sm:inline">Share</span>}
         </button>
         {isDevelopment && (
           <button
@@ -112,7 +112,7 @@ export function ShareButton({
             title="Preview share image"
           >
             <Eye className={iconSize} />
-            {!isIconVariant && 'Preview'}
+            {!isIconVariant && <span className="hidden sm:inline">Preview</span>}
           </button>
         )}
       </div>

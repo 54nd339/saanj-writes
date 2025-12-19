@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { BLOG } from './constants';
+import type { Author } from './types';
 
 /**
  * Merge Tailwind classes with clsx
@@ -121,4 +122,24 @@ export function getAbsoluteUrl(url: string | undefined | null): string | undefin
   
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://saanj.netlify.app';
   return `${baseUrl}${url.startsWith('/') ? url : `/${url}`}`;
+}
+
+/**
+ * Parse author name to extract first name, nickname, and last name
+ */
+export function parseAuthorName(author: Author): {
+  firstName: string;
+  nickname: string | null;
+  lastName: string;
+} {
+  // Parse the author name to extract name parts, but prefer the explicit nickname field
+  const nameParts = author.name.match(/(.+?)\s*"(.+?)"\s*(.+)/);
+  const firstName = nameParts ? nameParts[1] : author.name.split(' ')[0];
+  const parsedNickname = nameParts ? nameParts[2] : null;
+  const lastName = nameParts
+    ? nameParts[nameParts.length - 1]
+    : author.name.split(' ').slice(1).join(' ');
+  const nickname = author.nickname || parsedNickname;
+
+  return { firstName, nickname, lastName };
 }
