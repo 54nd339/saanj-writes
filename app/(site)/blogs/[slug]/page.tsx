@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PostDetail } from '@/components/blog';
 import { getPostBySlug, getAllPostSlugs, getSiteConfig } from '@/lib/hygraph';
+import { generateMetadata as generatePageMetadata, getSiteUrl } from '@/lib/metadata';
 
 interface PostPageProps {
   params: Promise<{ slug: string }>;
@@ -25,17 +26,19 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
     };
   }
 
-  return {
+  const postUrl = `${getSiteUrl()}/blogs/${slug}`;
+
+  return generatePageMetadata({
     title: post.title,
     description: post.excerpt,
-    openGraph: {
-      title: `${post.title} | ${siteConfig.siteName}`,
-      description: post.excerpt,
-      images: post.coverImage ? [post.coverImage.url] : [],
-      type: 'article',
-      publishedTime: post.publishDate,
-    },
-  };
+    siteName: siteConfig.siteName,
+    url: postUrl,
+    image: post.coverImage,
+    type: 'article',
+    publishedTime: post.publishDate,
+    authors: post.author ? [post.author.name] : undefined,
+    section: post.category?.name,
+  });
 }
 
 export default async function PostPage({ params }: PostPageProps) {

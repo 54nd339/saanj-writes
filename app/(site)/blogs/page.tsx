@@ -1,21 +1,22 @@
 import type { Metadata } from 'next';
 import { BlogsPageContent } from './BlogsPageContent';
 import { getAllPosts, getAllCategories, getSiteConfig } from '@/lib/hygraph';
+import { generateMetadata as generatePageMetadata, getSiteUrl } from '@/lib/metadata';
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteConfig = await getSiteConfig();
   const journalText = siteConfig.journalSectionText;
   const title = journalText?.heading || 'Anthology';
   const description = journalText?.subheading || journalText?.body?.text || 'Selected poems, academic essays, and literary commentary from Utkal University and beyond.';
+  const blogsUrl = `${getSiteUrl()}/blogs`;
   
-  return {
+  return generatePageMetadata({
     title,
     description,
-    openGraph: {
-      title: `${title} | ${siteConfig.siteName}`,
-      description,
-    },
-  };
+    siteName: siteConfig.siteName,
+    url: blogsUrl,
+    image: siteConfig.defaultSeo.ogImage,
+  });
 }
 
 export default async function BlogsPage() {

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Playfair_Display, JetBrains_Mono, Source_Sans_3 } from 'next/font/google';
 import './globals.css';
 import { getSiteConfig, fetchBulkData } from '@/lib/hygraph';
+import { generateDefaultMetadata } from '@/lib/metadata';
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -31,24 +32,20 @@ async function getMetadata() {
   }
   
   const siteConfig = await getSiteConfig();
+  const baseMetadata = await generateDefaultMetadata(siteConfig);
+  
   return {
+    ...baseMetadata,
     title: {
       default: siteConfig.defaultSeo.metaTitle,
       template: `%s | ${siteConfig.siteName}`,
     },
-    description: siteConfig.defaultSeo.metaDescription,
-    openGraph: {
-      title: siteConfig.defaultSeo.metaTitle,
-      description: siteConfig.defaultSeo.metaDescription,
-      images: siteConfig.defaultSeo.ogImage ? [siteConfig.defaultSeo.ogImage.url] : [],
-      type: 'website',
-      locale: 'en_US',
+    icons: {
+      icon: '/favicon.ico',
+      shortcut: '/favicon.ico',
+      apple: '/favicon.ico',
     },
-    other: {
-      'Content-Language': 'en',
-      'google': 'notranslate',
-    },
-  };
+  } as Metadata;
 }
 
 export const metadata: Metadata = await getMetadata();

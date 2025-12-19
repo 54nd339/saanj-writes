@@ -101,6 +101,8 @@ export function PostDetail({ post }: PostDetailProps) {
             title={post.title}
             text={post.excerpt}
             url={`${ROUTES.BLOGS}/${post.slug}`}
+            author={post.author?.name}
+            publishDate={post.publishDate}
             variant="button"
           />
         </div>

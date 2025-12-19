@@ -109,3 +109,16 @@ export function debounce<T extends (...args: Parameters<T>) => ReturnType<T>>(
     timeout = setTimeout(() => func(...args), wait);
   };
 }
+
+/**
+ * Ensure URL is absolute (for OG images and social sharing)
+ */
+export function getAbsoluteUrl(url: string | undefined | null): string | undefined {
+  if (!url) return undefined;
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://saanj.netlify.app';
+  return `${baseUrl}${url.startsWith('/') ? url : `/${url}`}`;
+}
