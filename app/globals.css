@@ -1,26 +1,242 @@
 @import "tailwindcss";
 
+/* ============================================
+   CSS VARIABLES - Default Theme (Velvet)
+   ============================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-main: #faf5ff;
+  --bg-card: #f3e8ff;
+  --text-main: #2e1065;
+  --text-muted: #6b21a8;
+  --accent: #7e22ce;
+  --accent-light: #d8b4fe;
+  --text-muted-rgb: 107, 33, 168;
+
+  --font-serif: 'Playfair Display', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Source Sans 3', sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  --bg-main: #0f0518;
+  --bg-card: #1e0a2e;
+  --text-main: #e9d5ff;
+  --text-muted: #c084fc;
+  --accent: #d8b4fe;
+  --accent-light: #581c87;
+  --text-muted-rgb: 192, 132, 252;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ============================================
+   BASE STYLES
+   ============================================ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  ::selection {
+    background-color: var(--accent);
+    color: white;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+@layer base {
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  .font-sans {
+    font-family: var(--font-sans);
+  }
+}
+
+/* ============================================
+   CUSTOM UTILITIES
+   ============================================ */
+@layer utilities {
+
+  /* Text balance for headings */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Line clamp utilities */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Radial gradient for vignette effect */
+  .bg-radial-gradient {
+    background: radial-gradient(ellipse at center, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%);
+  }
+
+  /* Glassmorphism */
+  .glass {
+    backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-dark {
+    backdrop-filter: blur(12px);
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* ============================================
+   PROSE CUSTOMIZATION
+   ============================================ */
+@layer components {
+  .prose {
+    --tw-prose-body: var(--text-main);
+    --tw-prose-headings: var(--text-main);
+    --tw-prose-links: var(--accent);
+    --tw-prose-bold: var(--text-main);
+    --tw-prose-quotes: var(--text-muted);
+    --tw-prose-quote-borders: var(--accent);
+  }
+
+  .prose h3 {
+    font-family: var(--font-serif);
+  }
+
+  .prose blockquote {
+    font-style: normal;
+    font-family: var(--font-serif);
+  }
+
+  .prose a {
+    text-decoration: none;
+  }
+
+  .prose a:hover {
+    text-decoration: underline;
+  }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@layer utilities {
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+  }
+
+  @keyframes pulse-slow {
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .animate-pulse-slow {
+    animation: pulse-slow 3s ease-in-out infinite;
+  }
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+@layer base {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg-card);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--text-muted);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+}
+
+/* ============================================
+   GRAIN OVERLAY
+   ============================================ */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.25;
+  z-index: 40;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-size: 150px 150px;
+}
+
+.dark .grain-overlay {
+  opacity: 0.3;
+  mix-blend-mode: soft-light;
+}
+
+/* ============================================
+   VIGNETTE OVERLAY
+   ============================================ */
+.vignette-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+  background: radial-gradient(ellipse 85% 55% at 50% 50%,
+      transparent 0%,
+      rgba(0, 0, 0, 0.08) 50%,
+      rgba(0, 0, 0, 0.18) 100%);
+  mix-blend-mode: multiply;
+}
+
+.dark .vignette-overlay {
+  background: radial-gradient(ellipse 85% 55% at 50% 50%,
+      transparent 0%,
+      rgba(0, 0, 0, 0.15) 50%,
+      rgba(0, 0, 0, 0.4) 100%);
+  mix-blend-mode: multiply;
 }
