@@ -111,6 +111,8 @@ export interface Post {
   coverImage: Asset;
   author?: Author;
   isFeatured?: boolean;
+  pdfDocument?: Asset;
+  pdfPageLimit?: number;
 }
 
 // ============================================

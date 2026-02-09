@@ -8,3 +8,4 @@ export { Input } from './Input';
 export { RichText } from './RichText';
 export { Loader } from './Loader';
 export { NotFound } from './NotFound';
+export { PdfViewer } from './PdfViewer';

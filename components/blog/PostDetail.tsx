@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { formatDate, calculateReadTime } from '@/lib/utils';
-import { Icon, Badge, RichText, ShareButton } from '@/components/ui';
+import { Icon, Badge, RichText, ShareButton, PdfViewer } from '@/components/ui';
 import { Container } from '@/components/layout';
 import { Reveal } from '@/components/sections';
 import { ROUTES, ANIMATION } from '@/lib/constants';
@@ -91,6 +91,19 @@ export function PostDetail({ post }: PostDetailProps) {
             />
           </div>
         </Reveal>
+
+        {/* PDF Viewer */}
+        {post.pdfDocument && (
+          <Reveal delay={300}>
+            <div className="mt-12 sm:mt-14 md:mt-16">
+              <PdfViewer
+                url={post.pdfDocument.url}
+                fileName={post.pdfDocument.fileName}
+                pageLimit={post.pdfPageLimit}
+              />
+            </div>
+          </Reveal>
+        )}
 
         {/* Footer */}
         <div className="mt-20 pt-8 border-t border-[var(--text-muted)]/20 flex flex-col sm:flex-row items-center justify-between gap-4">

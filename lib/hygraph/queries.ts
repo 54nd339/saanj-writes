@@ -137,6 +137,11 @@ export const ALL_POSTS_QUERY = `
         image { url }
       }
       isFeatured
+      pdfDocument {
+        url
+        fileName
+      }
+      pdfPageLimit
     }
     postsConnection(where: $where) {
       aggregate {
@@ -171,6 +176,11 @@ export const FEATURED_POSTS_QUERY = `
         nickname
       }
       isFeatured
+      pdfDocument {
+        url
+        fileName
+      }
+      pdfPageLimit
     }
   }
 `;
@@ -218,6 +228,11 @@ export const POST_BY_SLUG_QUERY = `
         }
       }
       isFeatured
+      pdfDocument {
+        url
+        fileName
+      }
+      pdfPageLimit
     }
   }
 `;
@@ -284,6 +299,11 @@ export const ALL_POSTS_FULL_QUERY = `
         }
       }
       isFeatured
+      pdfDocument {
+        url
+        fileName
+      }
+      pdfPageLimit
     }
   }
 `;
@@ -436,6 +456,11 @@ export const BULK_DATA_QUERY = `
         }
       }
       isFeatured
+      pdfDocument {
+        url
+        fileName
+      }
+      pdfPageLimit
     }
     categories {
       name

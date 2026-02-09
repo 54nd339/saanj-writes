@@ -22,8 +22,12 @@ import {
   Link as LinkIcon,
   Check,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   ExternalLink,
   Filter,
+  FileText,
+  AlertCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -51,7 +55,11 @@ const iconMap = {
   link: LinkIcon,
   check: Check,
   chevronDown: ChevronDown,
+  chevronLeft: ChevronLeft,
+  chevronRight: ChevronRight,
   external: ExternalLink,
+  fileText: FileText,
+  alertCircle: AlertCircle,
 } as const;
 
 export type IconName = keyof typeof iconMap;
@@ -64,7 +72,7 @@ interface IconProps {
 
 export function Icon({ name, size = 20, className }: IconProps) {
   const IconComponent = iconMap[name as IconName];
-  
+
   if (!IconComponent) {
     console.warn(`Icon "${name}" not found`);
     return null;
