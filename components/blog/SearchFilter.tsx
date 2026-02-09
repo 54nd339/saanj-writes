@@ -1,72 +1,57 @@
 'use client';
 
-import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { cn, debounce } from '@/lib/utils';
+import { useQueryState, parseAsString } from 'nuqs';
+import { useDebouncedCallback } from 'use-debounce';
+import { cn } from '@/lib/utils';
 import { Input, Badge, Icon } from '@/components/ui';
 import { ANIMATION } from '@/lib/constants';
-import type { Category, Post } from '@/lib/types';
+import type { Category } from '@/lib/types';
 
 interface SearchFilterProps {
   categories: Category[];
-  onFilter: (filtered: Post[], searchTerm: string, category: string | null) => void;
-  posts: Post[];
   compact?: boolean;
 }
 
-export function SearchFilter({ categories, onFilter, posts, compact = false }: SearchFilterProps) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+export function SearchFilter({ categories, compact = false }: SearchFilterProps) {
+  const [search, setSearch] = useQueryState('q', parseAsString.withDefault('').withOptions({ shallow: false }));
+  const [category, setCategory] = useQueryState('category', parseAsString.withDefault('').withOptions({ shallow: false }));
+
+  const [localSearch, setLocalSearch] = useState(search);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const filterPosts = useCallback(
-    (search: string, category: string | null) => {
-      let filtered = [...posts];
+  // Sync local state when URL changes
+  useEffect(() => {
+    setLocalSearch(search);
+  }, [search]);
 
-      if (search.trim()) {
-        const searchLower = search.toLowerCase();
-        filtered = filtered.filter(
-          (post) =>
-            post.title.toLowerCase().includes(searchLower) ||
-            post.excerpt.toLowerCase().includes(searchLower)
-        );
-      }
-
-      if (category) {
-        filtered = filtered.filter((post) => post.category?.slug === category);
-      }
-
-      onFilter(filtered, search, category);
-    },
-    [posts, onFilter]
-  );
-
-  const debouncedSearch = useMemo(
-    () => debounce((value: string) => filterPosts(value, selectedCategory), 300),
-    [filterPosts, selectedCategory]
-  );
+  // Debounce URL updates
+  const debouncedSetSearch = useDebouncedCallback((value: string) => {
+    setSearch(value || null);
+  }, 300);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchTerm(value);
-    debouncedSearch(value);
+    setLocalSearch(value);
+    debouncedSetSearch(value);
   };
 
   const handleCategoryClick = (categorySlug: string | null) => {
-    const newCategory = selectedCategory === categorySlug ? null : categorySlug;
-    setSelectedCategory(newCategory);
-    filterPosts(searchTerm, newCategory);
-  };
-
-  const clearFilters = () => {
-    setSearchTerm('');
-    setSelectedCategory(null);
-    filterPosts('', null);
+    const newCategory = category === categorySlug ? null : categorySlug;
+    setCategory(newCategory || null);
     setIsDropdownOpen(false);
   };
 
-  const hasActiveFilters = searchTerm.trim() !== '' || selectedCategory !== null;
+  const clearFilters = () => {
+    setLocalSearch('');
+    setSearch(null);
+    setCategory(null);
+    setIsDropdownOpen(false);
+  };
+
+  const hasActiveFilters = localSearch.trim() !== '' || category !== '';
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -85,6 +70,9 @@ export function SearchFilter({ categories, onFilter, posts, compact = false }: S
     };
   }, [isDropdownOpen]);
 
+  // Find selected category object for display
+  const selectedCategoryObj = categories.find((c) => c.slug === category);
+
   return (
     <div className={cn('relative', !compact && 'mb-12')}>
       {/* Search Bar with Filter Button */}
@@ -93,7 +81,7 @@ export function SearchFilter({ categories, onFilter, posts, compact = false }: S
           <Input
             type="text"
             placeholder="Search posts..."
-            value={searchTerm}
+            value={localSearch}
             onChange={handleSearchChange}
             icon="search"
             iconPosition="left"
@@ -138,37 +126,35 @@ export function SearchFilter({ categories, onFilter, posts, compact = false }: S
                       <button
                         onClick={() => {
                           handleCategoryClick(null);
-                          setIsDropdownOpen(false);
                         }}
                         className={cn(
                           'w-full text-left px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-md font-mono text-[10px] sm:text-xs uppercase tracking-wider transition-all',
-                          selectedCategory === null
+                          !category
                             ? 'bg-[var(--accent)] text-white'
                             : 'bg-[var(--bg-main)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)]'
                         )}
                       >
                         All Categories
                       </button>
-                      {categories.map((category) => (
+                      {categories.map((c) => (
                         <button
-                          key={category.slug}
+                          key={c.slug}
                           onClick={() => {
-                            handleCategoryClick(category.slug);
-                            setIsDropdownOpen(false);
+                            handleCategoryClick(c.slug);
                           }}
                           className={cn(
                             'w-full text-left px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-md font-mono text-[10px] sm:text-xs uppercase tracking-wider transition-all',
-                            selectedCategory === category.slug
+                            category === c.slug
                               ? 'text-white'
                               : 'bg-[var(--bg-main)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)]'
                           )}
                           style={
-                            selectedCategory === category.slug && category.color
-                              ? { backgroundColor: category.color.hex }
+                            category === c.slug && c.color
+                              ? { backgroundColor: c.color.hex }
                               : undefined
                           }
                         >
-                          {category.name}
+                          {c.name}
                         </button>
                       ))}
                     </div>
@@ -195,13 +181,13 @@ export function SearchFilter({ categories, onFilter, posts, compact = false }: S
 
       {hasActiveFilters && !compact && (
         <div className="flex items-center gap-2 sm:gap-3 flex-wrap mt-3 sm:mt-4">
-          {selectedCategory && (
+          {selectedCategoryObj && (
             <Badge
               variant="accent"
               size="sm"
-              color={categories.find((c) => c.slug === selectedCategory)?.color?.hex}
+              color={selectedCategoryObj.color?.hex}
             >
-              {categories.find((c) => c.slug === selectedCategory)?.name}
+              {selectedCategoryObj.name}
             </Badge>
           )}
         </div>

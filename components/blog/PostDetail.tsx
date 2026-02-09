@@ -1,13 +1,11 @@
-'use client';
-
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import { formatDate, calculateReadTime } from '@/lib/utils';
 import { Icon, Badge, RichText, ShareButton, PdfViewer } from '@/components/ui';
+import { ReadingProgressBar } from '@/components/ui/ReadingProgressBar';
 import { Container } from '@/components/layout';
 import { Reveal } from '@/components/sections';
-import { ROUTES, ANIMATION } from '@/lib/constants';
+import { ROUTES } from '@/lib/constants';
 import type { Post } from '@/lib/types';
 
 interface PostDetailProps {
@@ -25,14 +23,7 @@ export function PostDetail({ post }: PostDetailProps) {
   return (
     <article className="min-h-screen bg-[var(--bg-main)] pb-16 sm:pb-24 md:pb-32 pt-20 sm:pt-24 relative z-10">
       {/* Progress Bar */}
-      <motion.div
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ duration: ANIMATION.DURATION.SLOW, ease: 'circOut' }}
-        className="fixed top-0 left-0 w-full h-1 z-50 bg-[var(--bg-card)] origin-left"
-      >
-        <div className="h-full bg-[var(--accent)] w-1/3" />
-      </motion.div>
+      <ReadingProgressBar />
 
       <Container size="narrow">
         {/* Back Button */}
@@ -44,7 +35,6 @@ export function PostDetail({ post }: PostDetailProps) {
           Back to Anthology
         </Link>
 
-        {/* Header */}
         <Reveal>
           <div className="mb-8 sm:mb-10 md:mb-12 border-b border-[var(--text-muted)]/20 pb-8 sm:pb-10 md:pb-12">
             <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 font-mono text-[10px] sm:text-xs uppercase tracking-widest text-[var(--accent)] mb-4 sm:mb-6">

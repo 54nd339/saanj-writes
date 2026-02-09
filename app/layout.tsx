@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Playfair_Display, JetBrains_Mono, Source_Sans_3 } from 'next/font/google';
 import './globals.css';
 import { getSiteConfig, fetchBulkData } from '@/lib/hygraph';
@@ -30,10 +31,10 @@ async function getMetadata() {
   } catch (error) {
     console.warn('Bulk fetch failed, falling back to individual fetch:', error);
   }
-  
+
   const siteConfig = await getSiteConfig();
   const baseMetadata = await generateDefaultMetadata(siteConfig);
-  
+
   return {
     ...baseMetadata,
     title: {
@@ -60,7 +61,7 @@ export default function RootLayout({
       <body
         className={`${playfair.variable} ${jetbrains.variable} ${sourceSans.variable} font-sans antialiased`}
       >
-        {children}
+        <NuqsAdapter>{children}</NuqsAdapter>
       </body>
     </html>
   );

@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import { Icon, type IconName, RichText } from '@/components/ui';
 import { Container } from '@/components/layout';
